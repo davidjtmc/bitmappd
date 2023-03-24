@@ -1,3 +1,4 @@
+import 'package:bitmappd/workspace.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -16,7 +17,7 @@ class WelcomeScreen extends StatelessWidget {
               height: 50,
               width: 100,
               child: ElevatedButton(
-                onPressed: () {  },
+                onPressed: () {   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Workspace())); },
                 child: Center(child: Text("Start", style: TextStyle(color: Colors.white, fontSize: 20),), )
               )
             )
