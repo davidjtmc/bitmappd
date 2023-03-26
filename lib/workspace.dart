@@ -45,7 +45,7 @@ class _WorkspaceState extends State<Workspace> {
                             ],
                           ),
                         )),
-                    SizedBox(width: 100),
+                    SizedBox(child: Icon(Icons.arrow_right_alt, color: Colors.white,size: 50,),width: 100),
                     Container(
                       decoration: BoxDecoration(
                           color: Colors.white,
@@ -91,10 +91,6 @@ class _VisualCellState extends State<VisualCell> {
     return Container(
       height: 50,
       width: 50,
-      decoration: BoxDecoration(
-          border: Border.all(
-        color: Colors.black,
-      )),
     );
   }
 }
@@ -112,14 +108,17 @@ class VisualGrid extends StatefulWidget {
 class _VisualGridState extends State<VisualGrid> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-        children: List.generate(widget.height, (index) {
-      return Row(
-        children: List.generate(widget.width, (index) {
-          return VisualCell();
-        }),
-      );
-    }));
+    return Container(
+      decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+      child: Column(
+          children: List.generate(widget.height, (index) {
+        return Row(
+          children: List.generate(widget.width, (index) {
+            return VisualCell();
+          }),
+        );
+      })),
+    );
   }
 }
 
@@ -159,14 +158,17 @@ class BitGrid extends StatefulWidget {
 class _BitGridState extends State<BitGrid> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-        children: List.generate(widget.height, (index) {
-      return Row(
-        children: List.generate(widget.width, (index) {
-          return BitCell();
-        }),
-      );
-    }));
+    return Container(
+      decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+      child: Column(
+          children: List.generate(widget.height, (index) {
+        return Row(
+          children: List.generate(widget.width, (index) {
+            return BitCell();
+          }),
+        );
+      })),
+    );
   }
 }
 
