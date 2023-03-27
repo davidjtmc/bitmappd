@@ -25,32 +25,49 @@ class WelcomeScreen extends StatelessWidget {
               child: Row(
                 children: [
                   Expanded(
-                      child: TextField(
-                    controller: _heightController,
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        label: Text("Image Height (px)")),
-                  )),
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: _heightController,
+                          decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          label: Text("Image Height (px)")),
+                        ),
+                        Text('max. 16')
+                      ],
+                    ),
+                  ),
                   SizedBox(width: 10),
                   Expanded(
-                      child: TextField(
-                    controller: _widthController,
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        label: Text("Image Width (px)")),
-                  ))
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: _widthController,
+                          decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          label: Text("Image Width (px)")),
+                        ),
+                        Text('max. 16')
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),
-            SizedBox(height: 10),
-            Container(
-                width: 195,
-                child: TextField(
-                  controller: _colourDepthController,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      label: Text('Colour Depth (bits)')),
-                )),
+            SizedBox(height: 20),
+            Column(
+              children: [
+                Container(
+                    width: 195,
+                    child: TextField(
+                      controller: _colourDepthController,
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          label: Text('Colour Depth (bits)')),
+                    )),
+                Text('max. 4')
+              ],
+            ),
             SizedBox(height: 20),
             SizedBox(
                 height: 50,
