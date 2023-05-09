@@ -14,6 +14,20 @@ class Workspace extends StatefulWidget {
 }
 
 class _WorkspaceState extends State<Workspace> {
+  List<List<int>> bitValues = [];
+
+  @override
+  void initState() {
+    super.initState();
+    bitValues = List.generate(widget.imageHeight, (_) => List.generate(widget.imageWidth, (_) => 0));
+  }
+
+  void updateBitValue(int x, int y, int value) {
+    setState(() {
+      bitValues[y][x] = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,9 +44,8 @@ class _WorkspaceState extends State<Workspace> {
                     Container(
                         decoration: BoxDecoration(
                             color: Colors.white,
-                          boxShadow: panelShadow,
+                            boxShadow: panelShadow,
                             borderRadius: BorderRadius.circular(30)),
-
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Column(
@@ -41,7 +54,7 @@ class _WorkspaceState extends State<Workspace> {
                               SizedBox(
                                 height: 20,
                               ),
-                              BitGrid(height: widget.imageHeight, width: widget.imageWidth),
+                              BitGrid(height: widget.imageHeight, width: widget.imageWidth, onBitChanged: updateBitValue),
                             ],
                           ),
                         )),
@@ -49,7 +62,7 @@ class _WorkspaceState extends State<Workspace> {
                     Container(
                       decoration: BoxDecoration(
                           color: Colors.white,
-                        boxShadow: panelShadow,
+                          boxShadow: panelShadow,
                           borderRadius: BorderRadius.circular(30)),
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
@@ -62,6 +75,7 @@ class _WorkspaceState extends State<Workspace> {
                             VisualGrid(
                               height: widget.imageHeight,
                               width: widget.imageWidth,
+                              bitValues: bitValues,
                             ),
                           ],
                         ),
@@ -78,52 +92,50 @@ class _WorkspaceState extends State<Workspace> {
   }
 }
 
-class VisualCell extends StatefulWidget {
-  const VisualCell({Key? key}) : super(key: key);
+// ...
 
-  @override
-  State<VisualCell> createState() => _VisualCellState();
-}
+class VisualCell extends StatelessWidget {
+  final Color color;
 
-class _VisualCellState extends State<VisualCell> {
+  const VisualCell({Key? key, required this.color}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 50,
       width: 50,
+      color: color,
     );
   }
 }
 
-class VisualGrid extends StatefulWidget {
+class VisualGrid extends StatelessWidget {
   final int height;
   final int width;
+  final List<List<int>> bitValues;
 
-  const VisualGrid({super.key, required this.height, required this.width});
+  const VisualGrid({Key? key, required this.height, required this.width, required this.bitValues}) : super(key: key);
 
-  @override
-  State<VisualGrid> createState() => _VisualGridState();
-}
-
-class _VisualGridState extends State<VisualGrid> {
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(border: Border.all(color: Colors.black)),
       child: Column(
-          children: List.generate(widget.height, (index) {
-        return Row(
-          children: List.generate(widget.width, (index) {
-            return VisualCell();
-          }),
-        );
-      })),
+          children: List.generate(height, (y) {
+            return Row(
+              children: List.generate(width, (x) {
+                return VisualCell(color: bitValues[y][x] == 1 ? Colors.black : Colors.white);
+              }),
+            );
+          })),
     );
   }
 }
 
 class BitCell extends StatefulWidget {
-  const BitCell({Key? key}) : super(key: key);
+  final Function(int value) onValueChanged;
+
+  const BitCell({Key? key, required this.onValueChanged}) : super(key: key);
 
   @override
   State<BitCell> createState() => _BitCellState();
@@ -132,13 +144,20 @@ class BitCell extends StatefulWidget {
 class _BitCellState extends State<BitCell> {
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(
+    return SizedBox(
       width: 50,
       height: 50,
       child: TextField(
+        keyboardType: TextInputType.number,
         decoration: InputDecoration(
           border: OutlineInputBorder(borderRadius: BorderRadius.zero),
         ),
+        onChanged: (text) {
+          int value = int.tryParse(text) ?? 0;
+          if (value == 0 || value == 1) {
+            widget.onValueChanged(value);
+          }
+        },
       ),
     );
   }
@@ -147,8 +166,9 @@ class _BitCellState extends State<BitCell> {
 class BitGrid extends StatefulWidget {
   final int height;
   final int width;
+  final Function(int x, int y, int value) onBitChanged;
 
-  const BitGrid({Key? key, required this.height, required this.width})
+  const BitGrid({Key? key, required this.height, required this.width, required this.onBitChanged})
       : super(key: key);
 
   @override
@@ -161,13 +181,17 @@ class _BitGridState extends State<BitGrid> {
     return Container(
       decoration: BoxDecoration(border: Border.all(color: Colors.black)),
       child: Column(
-          children: List.generate(widget.height, (index) {
-        return Row(
-          children: List.generate(widget.width, (index) {
-            return BitCell();
-          }),
-        );
-      })),
+          children: List.generate(widget.height, (y) {
+            return Row(
+              children: List.generate(widget.width, (x) {
+                return BitCell(
+                  onValueChanged: (value) {
+                    widget.onBitChanged(x, y, value);
+                  },
+                );
+              }),
+            );
+          })),
     );
   }
 }
@@ -179,3 +203,4 @@ final List<BoxShadow> panelShadow = [
     offset: const Offset(0, 3),
   ),
 ];
+
