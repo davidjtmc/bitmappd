@@ -1,6 +1,7 @@
 import 'dart:html';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Workspace extends StatefulWidget {
   final int imageHeight;
@@ -142,24 +143,39 @@ class BitCell extends StatefulWidget {
 }
 
 class _BitCellState extends State<BitCell> {
+  TextEditingController _controller = TextEditingController(text: '0');
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      int value = int.tryParse(_controller.text) ?? 0;
+      if (value == 0 || value == 1) {
+        widget.onValueChanged(value);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 50,
       height: 50,
       child: TextField(
+        controller: _controller,
         keyboardType: TextInputType.number,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         decoration: InputDecoration(
           border: OutlineInputBorder(borderRadius: BorderRadius.zero),
         ),
-        onChanged: (text) {
-          int value = int.tryParse(text) ?? 0;
-          if (value == 0 || value == 1) {
-            widget.onValueChanged(value);
-          }
-        },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
 
